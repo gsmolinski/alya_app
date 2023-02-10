@@ -8,7 +8,16 @@ content <- setNames(lapply(content_directory, set_content, chapters = chapters),
 story_panel <- lapply(seq_along(chapters), make_story_panel, chapters = chapters, pictures = content[["picture"]])
 
 ui <- fluidPage(
-  tags$head(tags$link(rel = "stylesheet", href = "css/stylesheet.css")),
+  tags$head(
+    tags$link(rel = "stylesheet", href = "css/stylesheet.css"),
+    tags$script("
+                Shiny.addCustomMessageHandler('change_sound', function(path) {
+                let player = document.getElementById('player');
+                player.src = path;
+                player.load()
+                });
+                ")
+    ),
   theme = bslib::bs_theme(5, bootswatch = "quartz"),
   br(),
   sidebarLayout(
@@ -21,7 +30,10 @@ ui <- fluidPage(
       br(),
       br(),
       fluidRow(
-        column(12, uiOutput("play"))
+        column(12, tags$audio(src = glue::glue("{content_directory[[2]]}/{chapters[[1]]}/1.mp3"),
+                              controls = NA,
+                              class = content_directory[[2]],
+                              id = "player"))
       )
     ),
     mainPanel(width = 9,
@@ -34,16 +46,16 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   
-  output$play <- renderUI({
+  observe({
     id <- paste0("shinyglide_index_", input$stories)
-      if (length(as.numeric(input[[id]])) == 0) {
-        idx <- 0
-      } else {
-        idx <- as.numeric(input[[id]])
-      }
+    if (length(as.numeric(input[[id]])) == 0) {
+      idx <- 0
+    } else {
+      idx <- as.numeric(input[[id]])
+    }
     idx <- idx + 1 # because in shinyglide it starts from 0
     
-    content[["sound"]][[input$stories]][[idx]]
+    session$sendCustomMessage("change_sound", content[["sound"]][[input$stories]][[idx]])
   })
   
 }
