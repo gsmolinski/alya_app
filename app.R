@@ -9,14 +9,8 @@ story_panel <- lapply(seq_along(chapters), make_story_panel, chapters = chapters
 
 ui <- fluidPage(
   tags$head(
-    tags$link(rel = "stylesheet", href = "css/stylesheet.css"),
-    tags$script("
-                Shiny.addCustomMessageHandler('change_sound', function(path) {
-                let player = document.getElementById('player');
-                player.src = path;
-                player.load()
-                });
-                ")
+    tags$link(rel = "stylesheet", type = "text/css", href = "css/stylesheet.css"),
+    tags$script(type = "text/javascript", src = "js/change_sound.js")
     ),
   theme = bslib::bs_theme(5, bootswatch = "quartz"),
   br(),
