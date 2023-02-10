@@ -4,11 +4,14 @@ set_content <- function(content_directory, chapters) {
   if (content_directory == "picture") {
     content <- lapply(main_urls,
                       function(x) lapply(x,
-                                         function(e) screen(tags$img(src = substr(e, 5, 1000), class = content_directory))))
+                                         function(e) shinyglide::screen(tags$img(src = substr(e, 5, 1000), # remove www/
+                                                                                 class = content_directory))))
   } else if (content_directory == "sound") {
     content <- lapply(main_urls,
                       function(x) lapply(x,
-                                         function(e) tags$audio(src = substr(e, 5, 1000), controls = NA, class = content_directory)))
+                                         function(e) tags$audio(src = substr(e, 5, 1000), # remove www/ for Shiny
+                                                                controls = NA,
+                                                                class = content_directory)))
   }
   names(content) <- chapters
   content

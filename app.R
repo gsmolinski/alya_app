@@ -1,6 +1,4 @@
 library(shiny)
-library(shinyWidgets)
-library(shinyglide)
 
 chapters <- c("home", "story_1", 'story_2')
 chapters_labels <- c("Home", "First Story", "Second Story")
@@ -16,7 +14,7 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(width = 3,
       fluidRow(
-        column(12, radioGroupButtons("stories",
+        column(12, shinyWidgets::radioGroupButtons("stories",
                                      choices = setNames(chapters, chapters_labels),
                                      status = "primary", direction = "vertical"))
       ),
@@ -43,7 +41,7 @@ server <- function(input, output, session) {
       } else {
         idx <- as.numeric(input[[id]])
       }
-    idx <- idx + 1
+    idx <- idx + 1 # because in shinyglide it starts from 0
     
     content[["sound"]][[input$stories]][[idx]]
   })
